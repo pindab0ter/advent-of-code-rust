@@ -2,13 +2,12 @@
 <module type="EMPTY_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/2015/day01/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/aoc-client/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/common/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/2015/day01/target" />
+      <sourceFolder url="file://$MODULE_DIR$/solutions/aoc2015/day01/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/aoc-client/target" />
       <excludeFolder url="file://$MODULE_DIR$/common/target" />
+      <excludeFolder url="file://$MODULE_DIR$/solutions/aoc2015/day01/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

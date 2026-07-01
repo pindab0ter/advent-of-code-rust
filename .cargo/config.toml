@@ -1,0 +1,2 @@
+[alias]
+aoc = "generate --init --destination solutions --path solutions/template --name aoc --no-workspace"

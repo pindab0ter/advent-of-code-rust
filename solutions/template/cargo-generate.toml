@@ -1,0 +1,10 @@
+[template]
+ignore = [".DS_Store"]
+
+[placeholders]
+year = { type = "string", prompt = "Year" }
+day = { type = "string", prompt = "Day (1-25)" }
+puzzle_name = { type = "string", prompt = "Puzzle name" }
+
+[hooks]
+pre = ["pre-script.rhai"]

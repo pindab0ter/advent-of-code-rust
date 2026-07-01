@@ -1,0 +1,23 @@
+use aoc_client::input;
+
+fn main() {
+    let input = input({{ year }}, {{ day }});
+
+    println!("{input}");
+}
+
+fn solve_part_1(_input: &str) -> i32 {
+    0
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rstest::rstest;
+
+    #[rstest]
+    #[case("", 0)]
+    fn solves_part_1(#[case] input: &str, #[case] expected: i32) {
+        assert_eq!(solve_part_1(input), expected);
+    }
+}
