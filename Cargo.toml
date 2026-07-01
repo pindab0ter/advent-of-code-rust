@@ -1,0 +1,7 @@
+[workspace]
+resolver = "3"
+members = ["aoc-client", "common", "2015/*"]
+
+[workspace.dependencies]
+aoc-client = { path = "aoc-client"}
+rstest = "0.26.1"
