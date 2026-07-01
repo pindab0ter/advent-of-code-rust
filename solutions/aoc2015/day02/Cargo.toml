@@ -1,0 +1,10 @@
+[package]
+name = "aoc2015-day02-i-was-told-there-would-be-no-math"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc-client.workspace = true
+
+[dev-dependencies]
+rstest.workspace = true
