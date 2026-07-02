@@ -1,15 +1,17 @@
 use aoc_client::input;
+use common_macros::timed;
 
 fn main() {
     let instructions = input(2015, 1);
 
     let floor = find_floor(&instructions);
-    println!("The instructions take Santa to floor {floor}");
+    println!("The instructions take Santa to floor {floor}\n");
 
     let instruction_index = find_when_entering_basement(&instructions);
-    println!("The basement was eneterd at instruction #{instruction_index}")
+    println!("The basement was entered at instruction #{instruction_index}");
 }
 
+#[timed]
 fn find_floor(instructions: &str) -> i32 {
     instructions.bytes().fold(0, |acc, instruction| {
         acc + match instruction {
@@ -20,8 +22,9 @@ fn find_floor(instructions: &str) -> i32 {
     })
 }
 
+#[timed]
 fn find_when_entering_basement(instructions: &str) -> i32 {
-     instructions
+    instructions
         .bytes()
         .scan(0, |floor, instruction| {
             *floor += match instruction {

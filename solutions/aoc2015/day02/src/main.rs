@@ -1,52 +1,33 @@
-use std::num::ParseIntError;
 use aoc_client::input;
+use common::timed;
+use present::Present;
 use std::str::FromStr;
 
-#[derive(Clone, Copy)]
-struct Present {
-    l: u32,
-    w: u32,
-    h: u32,
-}
-
-impl Present {
-    fn smallest_area(self) -> u32 {
-        *self.faces().iter().min().unwrap()
-    }
-
-    fn faces(self) -> [u32; 3] {
-        [self.l * self.w, self.w * self.h, self.l * self.h]
-    }
-
-    fn required_paper_area(self) -> u32 {
-        self.faces().iter().map(|x| 2 * x).sum::<u32>() + self.smallest_area()
-    }
-}
-
-impl FromStr for Present {
-    type Err = ParseIntError;
-
-    fn from_str(string: &str) -> Result<Self, Self::Err> {
-        let [l, w, h] = string
-            .split('x')
-            .map(str::parse)
-            .collect::<Result<Vec<u32>, _>>()?
-            .try_into()
-            .expect("Dimensions must be LxWxH of u32");
-
-        Ok(Present { l, w, h })
-    }
-}
+mod present;
 
 fn main() {
     let input = input(2015, 2);
 
-    let total_paper_area: u32 = input
+    let presents: Vec<Present> = input
         .lines()
-        .map(|line| Present::from_str(line).unwrap().required_paper_area())
-        .sum();
+        .map(|line| Present::from_str(line).unwrap())
+        .collect();
 
-    println!("Total paper required: {total_paper_area} ft²");
+    let total_paper_area: u32 = timed("Calculating total paper area", || {
+        presents
+            .iter()
+            .map(|present| present.required_paper_area())
+            .sum()
+    });
+    println!("Total paper required: {total_paper_area} ft²\n");
+
+    let total_ribbon_length: u32 = timed("Calculating required ribbon length", || {
+        presents
+            .iter()
+            .map(|present| present.required_ribbon_length())
+            .sum()
+    });
+    println!("Total ribbon required: {total_ribbon_length} ft");
 }
 
 #[cfg(test)]
@@ -57,7 +38,14 @@ mod tests {
     #[rstest]
     #[case(Present{l: 2, w: 3, h: 4}, 58)]
     #[case(Present{l: 1, w: 1, h: 10}, 43)]
-    fn solves_part_1(#[case] present: Present, #[case] expected: u32) {
+    fn calculates_required_paper_area(#[case] present: Present, #[case] expected: u32) {
         assert_eq!(present.required_paper_area(), expected);
+    }
+
+    #[rstest]
+    #[case(Present{l: 2, w: 3, h: 4}, 34)]
+    #[case(Present{l: 1, w: 1, h: 10}, 14)]
+    fn calculates_required_ribbon_length(#[case] present: Present, #[case] expected: u32) {
+        assert_eq!(present.required_ribbon_length(), expected);
     }
 }

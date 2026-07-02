@@ -1,8 +1,9 @@
 [workspace]
 resolver = "3"
-members = ["aoc-client", "common", "solutions/aoc*/day*"]
+members = ["aoc-client", "common", "common-macros", "solutions/aoc*/day*"]
 
 [workspace.dependencies]
 aoc-client = { path = "aoc-client" }
+common = { path = "common" }
+common-macros = { path = "common-macros" }
 rstest = "0.26.1"
-
