@@ -19,30 +19,48 @@ fn parse(input: &str) -> Vec<Direction> {
         .collect()
 }
 
-fn main() {
-    let directions = parse(&input(2015, 3));
+trait VisitedHouses {
+    fn visited_houses(self) -> HashSet<Point<i32>>;
+}
 
-    let houses_visited = count_visited_houses(&directions);
+impl<'a, I: Iterator<Item = &'a Direction>> VisitedHouses for I {
+    fn visited_houses(self) -> HashSet<Point<i32>> {
+        let houses_except_origin = self.scan(Point::<i32>::origin(), |position, direction| {
+            *position += direction.delta();
+            Some(*position)
+        });
 
-    println!("Houses that receive at least one present: {houses_visited}");
+        once(Point::origin())
+            .chain(houses_except_origin)
+            .collect::<HashSet<_>>()
+    }
 }
 
 #[timed]
-fn count_visited_houses(directions: &[Direction]) -> u32 {
-    let houses_except_origin =
-        directions
-            .iter()
-            .scan(Point::<i32>::origin(), |position, direction| {
-                *position += direction.delta();
-                Some(*position)
-            });
+fn count_houses_visited_by_santa(directions: &[Direction]) -> usize {
+    directions.iter().visited_houses().len()
+}
 
-    once(Point::origin())
-        .chain(houses_except_origin)
-        .collect::<HashSet<_>>()
-        .len()
-        .try_into()
-        .unwrap()
+#[timed]
+fn count_houses_visited_by_santa_and_robot(directions: &[Direction]) -> usize {
+    let houses_visited_by_santa = directions.iter().step_by(2).visited_houses();
+    let houses_visited_by_robot = directions.iter().skip(1).step_by(2).visited_houses();
+
+    houses_visited_by_santa
+        .union(&houses_visited_by_robot)
+        .count()
+}
+
+fn main() {
+    let directions = parse(&input(2015, 3));
+
+    let houses_visited_by_santa = count_houses_visited_by_santa(&directions);
+    println!("Houses that received at least one present from Santa: {houses_visited_by_santa}\n");
+
+    let houses_visited_by_santa_and_robot = count_houses_visited_by_santa_and_robot(&directions);
+    println!(
+        "Houses that receive at least one present from Santa or Robot Santa: {houses_visited_by_santa_and_robot}\n"
+    );
 }
 
 #[cfg(test)]
@@ -54,8 +72,17 @@ mod tests {
     #[case(">", 2)]
     #[case("^>v<", 4)]
     #[case("^v^v^v^v^v", 2)]
-    fn counts_visited_houses(#[case] input: &str, #[case] expected: u32) {
-        let actual = count_visited_houses(&parse(input));
+    fn counts_visited_houses(#[case] input: &str, #[case] expected: usize) {
+        let actual = count_houses_visited_by_santa(&parse(input));
+        assert_eq!(actual, expected);
+    }
+
+    #[rstest]
+    #[case("^v", 3)]
+    #[case("^>v<", 3)]
+    #[case("^v^v^v^v^v", 11)]
+    fn counts_visited_houses_with_robot_santa(#[case] input: &str, #[case] expected: usize) {
+        let actual = count_houses_visited_by_santa_and_robot(&parse(input));
         assert_eq!(actual, expected);
     }
 }
