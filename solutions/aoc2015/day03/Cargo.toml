@@ -1,0 +1,12 @@
+[package]
+name = "aoc2015-day03-perfectly-spherical-houses-in-a-vacuum"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc-client.workspace = true
+common.workspace = true
+common-macros.workspace = true
+
+[dev-dependencies]
+rstest.workspace = true

@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/solutions/aoc2015/day01/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/solutions/aoc2015/day02/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/common-macros/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/solutions/aoc2015/day03/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/aoc-client/target" />
       <excludeFolder url="file://$MODULE_DIR$/common/target" />
       <excludeFolder url="file://$MODULE_DIR$/solutions/aoc2015/day01/target" />

@@ -1,3 +1,9 @@
+pub mod direction;
+pub mod vector;
+pub mod point;
+
+pub use direction::Direction;
+
 use std::time::Instant;
 
 pub fn timed<T>(name: &str, work: impl FnOnce() -> T) -> T {
