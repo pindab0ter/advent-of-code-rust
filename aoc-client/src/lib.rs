@@ -33,7 +33,7 @@ fn download_puzzle_input(year: u32, day: u32) -> String {
         .unwrap();
 
     let status = response.status();
-    let text = response.text().unwrap();
+    let text = response.text().unwrap().trim().to_owned();
 
     if status.is_client_error() {
         panic!(
@@ -43,5 +43,5 @@ fn download_puzzle_input(year: u32, day: u32) -> String {
         panic!("Unexpected status code: {}\n{}", status, text)
     }
 
-    text
+    text.to_string()
 }
