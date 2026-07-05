@@ -1,25 +1,27 @@
 use aoc_client::input;
 use common_macros::timed;
-use std::fmt::Write;
+use md5::{Digest, Md5};
 use std::iter::successors;
 
 fn main() {
     let input = input(2015, 4);
 
     let result = mine_advent_coin(&input);
-    println!(
-        "The lowest number it takes to make an MD5 hash starting with five zeroes is {result}"
-    );
+    println!("Advent Coin mined at {result}");
 }
 
 #[timed]
 fn mine_advent_coin(secret_key: &str) -> u32 {
-    let mut buf = String::new();
+    let mut secret_key_bytes = secret_key.as_bytes().to_vec();
+    let base = secret_key_bytes.len();
+    let mut hasher = Md5::new();
+    let mut itoa = itoa::Buffer::new();
 
     for n in successors(Some(1), |&n| Some(n + 1)) {
-        buf.clear();
-        write!(buf, "{secret_key}{n}").unwrap();
-        let digest = md5::compute(&buf);
+        secret_key_bytes.truncate(base);
+        secret_key_bytes.extend(itoa.format(n).as_bytes());
+        Digest::update(&mut hasher, &secret_key_bytes);
+        let digest = Digest::finalize_reset(&mut hasher);
 
         // Each byte holds two hex digits
         if digest[..2] == [0, 0] && digest[2] & 0xf0 == 0 {
