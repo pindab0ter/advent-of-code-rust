@@ -1,6 +1,5 @@
 use aoc_client::input;
 use common_macros::timed;
-use std::collections::HashMap;
 
 fn main() {
     let input = input(2015, 5);
@@ -53,22 +52,15 @@ fn string_is_nice(string: &str) -> bool {
 // Part 2
 
 fn contains_non_overlapping_pairs(string: &str) -> bool {
-    string
-        .as_bytes()
-        .windows(2)
-        .enumerate()
-        // Build a map of all pairs (key) to all the indices where the pairs are found (value)
-        .fold(
-            HashMap::<&[u8], Vec<usize>>::new(),
-            |mut acc, (index, pair)| {
-                acc.entry(pair).or_default().push(index);
-                acc
-            },
-        )
-        // Drop the content of the pairs, leaving only where they are found
-        .values()
-        // Only two non-overlapping pairs are ‘nice’ when they are more than one index apart
-        .any(|indices| indices.len() > 1 && indices.last().unwrap() - indices.first().unwrap() > 1)
+    let last_pair_start = string.len().saturating_sub(1);
+    let pair_indices = 0..last_pair_start;
+
+    // Walk through the string and see if a pair exists in the rest of the string
+    pair_indices.to_owned().any(|i| {
+        let pair = &string[i..=i + 1];
+        let rest = &string[i + 2..];
+        rest.contains(pair)
+    })
 }
 
 fn contains_split_duo(string: &str) -> bool {
