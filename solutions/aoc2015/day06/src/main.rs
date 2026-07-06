@@ -75,6 +75,23 @@ fn count_lit_lights(instructions: &[Instruction]) -> usize {
     grid.iter().filter(|cell| **cell).count()
 }
 
+#[timed]
+fn determine_brightness(instructions: &[Instruction]) -> u32 {
+    let mut grid = Grid::<u32>::new(1000, 1000);
+
+    for instruction in instructions {
+        match instruction.action {
+            TurnOn => grid.map_rect(instruction.point_a, instruction.point_b, |cell| cell + 1),
+            TurnOff => grid.map_rect(instruction.point_a, instruction.point_b, |cell| {
+                cell.saturating_sub(1)
+            }),
+            Toggle => grid.map_rect(instruction.point_a, instruction.point_b, |cell| cell + 2),
+        }
+    }
+
+    grid.iter().sum()
+}
+
 fn main() {
     let input = input(2015, 6);
 
@@ -84,12 +101,15 @@ fn main() {
         .collect::<Vec<Instruction>>();
 
     let lit_lights_count = count_lit_lights(&instructions);
-    println!("{lit_lights_count} lights are lit after following the instructions");
+    println!("{lit_lights_count} lights are lit after following the instructions\n");
+
+    let total_brightness = determine_brightness(&instructions);
+    println!("The total brightness after following the instructions is {total_brightness}");
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{count_lit_lights, Instruction};
+    use crate::{Instruction, count_lit_lights, determine_brightness};
     use rstest::rstest;
     use std::str::FromStr;
 
@@ -101,5 +121,14 @@ mod tests {
         let instruction = Instruction::from_str(input).unwrap();
         let count = count_lit_lights(&[instruction]);
         assert_eq!(count, expected);
+    }
+
+    #[rstest]
+    #[case("turn on 0,0 through 0,0", 1)]
+    #[case("toggle 0,0 through 999,999", 2_000_000)]
+    fn determines_total_brightness(#[case] input: &str, #[case] expected: u32) {
+        let instruction = Instruction::from_str(input).unwrap();
+        let total_brightness = determine_brightness(&[instruction]);
+        assert_eq!(total_brightness, expected);
     }
 }
