@@ -1,6 +1,7 @@
 pub mod direction;
 pub mod vector;
 pub mod point;
+pub mod grid;
 
 pub use direction::Direction;
 

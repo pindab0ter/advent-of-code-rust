@@ -1,0 +1,13 @@
+[package]
+name = "aoc2015-day06-probably-a-fire-hazard"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc-client.workspace = true
+common.workspace = true
+common-macros.workspace = true
+regex = "1.12.4"
+
+[dev-dependencies]
+rstest.workspace = true
