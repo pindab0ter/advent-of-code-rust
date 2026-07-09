@@ -27,7 +27,7 @@ pub fn timed(attr: TokenStream, item: TokenStream) -> TokenStream {
         #(#attrs)* #vis #sig {
             let __start = std::time::Instant::now();
             let __result = (move || #block)();
-            println!("{} took {:?} µs", #label, __start.elapsed().as_micros());
+            println!("{} took {:.0?}", #label, __start.elapsed());
             __result
         }
     }
