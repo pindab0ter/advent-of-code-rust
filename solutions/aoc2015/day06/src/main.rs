@@ -1,3 +1,5 @@
+//! [Probably a Fire Hazard](https://adventofcode.com/2015/day/6)
+
 use crate::Action::{Toggle, TurnOff, TurnOn};
 use aoc_client::input;
 use common::grid::Grid;

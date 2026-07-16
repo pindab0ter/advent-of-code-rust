@@ -1,3 +1,5 @@
+//! [The Ideal Stocking Stuffer](https://adventofcode.com/2015/day/4)
+
 use aoc_client::input;
 use common_macros::timed;
 use md5::digest::Output;

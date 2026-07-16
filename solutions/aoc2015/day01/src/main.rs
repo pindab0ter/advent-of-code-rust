@@ -1,3 +1,5 @@
+//! [Not Quite Lisp](https://adventofcode.com/2015/day/1)
+
 use aoc_client::input;
 use common_macros::timed;
 

@@ -1,3 +1,5 @@
+//! [Perfectly Spherical Houses in a Vacuum](https://adventofcode.com/2015/day/3)
+
 use aoc_client::input;
 use common::Direction;
 use common::Direction::{East, North, South, West};
