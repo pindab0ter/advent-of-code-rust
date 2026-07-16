@@ -45,7 +45,7 @@ fn mine_advent_coin<F: Fn(Output<Md5>) -> bool + Sync>(
                 let mut itoa = itoa::Buffer::new();
 
                 for i in (start as usize + thread_index..).step_by(thread_count) {
-                    if best.load(Relaxed) < u32::MAX {
+                    if best.load(Relaxed) < i as u32 {
                         return;
                     }
 
@@ -56,7 +56,6 @@ fn mine_advent_coin<F: Fn(Output<Md5>) -> bool + Sync>(
 
                     if is_valid_advent_coin(digest) {
                         best.fetch_min(i as u32, Relaxed);
-                        break;
                     }
                 }
             });
