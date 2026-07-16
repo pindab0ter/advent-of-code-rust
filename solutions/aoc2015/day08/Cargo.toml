@@ -1,0 +1,11 @@
+[package]
+name = "aoc2015-day08-matchsticks"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc-client.workspace = true
+common.workspace = true
+
+[dev-dependencies]
+rstest.workspace = true
