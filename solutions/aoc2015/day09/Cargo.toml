@@ -1,0 +1,8 @@
+[package]
+name = "aoc2015-day09-all-in-a-single-night"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc-client.workspace = true
+common-macros.workspace = true
