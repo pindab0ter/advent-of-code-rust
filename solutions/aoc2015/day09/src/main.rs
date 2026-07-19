@@ -2,63 +2,82 @@
 
 use aoc_client::input;
 use common_macros::timed;
-use std::collections::{HashMap, HashSet};
-use crate::collections::permutations;
+use itertools::Itertools;
 
-mod collections;
+type Distance = u32;
 
-#[derive(Eq, PartialEq, Hash, Debug)]
-struct Hop<'a>(&'a str, &'a str);
+/// [`distances`] is a 2D matrix of distances indexed by
+/// `source_city_id * [city_count] * destination_city_id`. See [`distance_index`].
+#[derive(Debug)]
+struct DistanceMatrix {
+    city_count: usize,
+    distances: Vec<Option<Distance>>,
+}
 
-impl<'a> Hop<'a> {
-    fn new(a: &'a str, b: &'a str) -> Self {
-        if a <= b { Hop(a, b) } else { Hop(b, a) }
+impl DistanceMatrix {
+    fn get_distance_for(&self, source: usize, destination: usize) -> Distance {
+        self.distances[distance_index(source, destination, self.city_count)].unwrap()
     }
 }
 
 fn main() {
     let input = input(2015, 9);
 
-    let hop_distances = parse(&input);
-    let all_possible_routes = all_possible_routes(&hop_distances);
-    let shortest_route = shortest_route(&hop_distances, &all_possible_routes);
+    let distance_matrix = parse(&input);
+    let shortest_route = find_shortest_route(distance_matrix);
 
     println!("The shortest route visiting all destinations is: {shortest_route}");
 }
 
-#[timed]
-fn parse(input: &str) -> HashMap<Hop<'_>, u32> {
-    input.lines().fold(HashMap::new(), |mut distances, line| {
-        let (source, rest) = line.split_once(" to ").unwrap();
-        let (destination, distance) = rest.split_once(" = ").unwrap();
-
-        distances.insert(Hop::new(source, destination), distance.parse().unwrap());
-
-        distances
-    })
+fn distance_index(destination_id: usize, source_id: usize, cities_count: usize) -> usize {
+    source_id * cities_count + destination_id
 }
 
 #[timed]
-fn all_possible_routes<'a>(distances: &HashMap<Hop<'a>, u32>) -> Vec<Vec<&'a str>> {
-    permutations(
-        &distances
-            .keys()
-            .flat_map(|hop| [hop.0, hop.1])
-            .collect::<HashSet<&str>>()
-            .into_iter()
-            .collect::<Vec<&str>>(),
-    )
-    .collect::<Vec<Vec<&str>>>()
-}
+fn parse(input: &str) -> DistanceMatrix {
+    let cities_to_distances = input
+        .lines()
+        .map(|line| {
+            let (source, rest) = line.split_once(" to ").unwrap();
+            let (destination, distance) = rest.split_once(" = ").unwrap();
 
-#[timed]
-fn shortest_route(distances: &HashMap<Hop, u32>, all_possible_routes: &Vec<Vec<&str>>) -> u32 {
-    all_possible_routes
+            ((source, destination), distance.parse().unwrap())
+        })
+        .collect::<Vec<((&str, &str), Distance)>>();
+
+    let mut cities = cities_to_distances
         .iter()
-        .map(|destinations| {
-            destinations
+        .flat_map(|((source, destination), _)| [*source, *destination])
+        .collect::<Vec<&str>>();
+    cities.sort();
+    cities.dedup();
+
+    let city_count = cities.len();
+
+    let mut distances = vec![None; city_count * city_count];
+
+    for ((source, destination), distance) in cities_to_distances {
+        let source_id = cities.binary_search(&source).unwrap();
+        let destination_id = cities.binary_search(&destination).unwrap();
+        distances[distance_index(destination_id, source_id, city_count)] = Some(distance);
+        distances[distance_index(source_id, destination_id, city_count)] = Some(distance);
+    }
+
+    DistanceMatrix {
+        city_count,
+        distances,
+    }
+}
+
+#[timed]
+fn find_shortest_route(matrix: DistanceMatrix) -> u32 {
+    let all_possible_routes = (0..matrix.city_count).permutations(matrix.city_count);
+
+    all_possible_routes
+        .map(|route| {
+            route
                 .windows(2)
-                .map(|hop| distances[&Hop::new(hop[0], hop[1])])
+                .map(|hop| matrix.get_distance_for(hop[0], hop[1]))
                 .sum::<u32>()
         })
         .min()
@@ -70,7 +89,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn solves_part_1() {
+    fn finds_the_shortest_distance() {
         let input = "
 London to Dublin = 464
 London to Belfast = 518
@@ -78,9 +97,8 @@ Dublin to Belfast = 141
         "
         .trim();
 
-        let distances = parse(input);
-        let all_possible_routes = all_possible_routes(&distances);
-        let shortest_route = shortest_route(&distances, &all_possible_routes);
+        let distance_matrix = parse(input);
+        let shortest_route = find_shortest_route(distance_matrix);
 
         assert_eq!(shortest_route, 605);
     }
