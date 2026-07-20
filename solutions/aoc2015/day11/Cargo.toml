@@ -1,0 +1,12 @@
+[package]
+name = "aoc2015-day11-corporate-policy"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc-client.workspace = true
+common-macros.workspace = true
+itertools = "0.15.0"
+
+[dev-dependencies]
+rstest.workspace = true
