@@ -1,0 +1,12 @@
+[package]
+name = "aoc2015-day12-js-abacus-framework-io"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc-client.workspace = true
+common.workspace = true
+json = "0.12.4"
+
+[dev-dependencies]
+rstest.workspace = true
