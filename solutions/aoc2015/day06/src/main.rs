@@ -70,7 +70,7 @@ fn count_lit_lights(instructions: &[Instruction]) -> usize {
         match instruction.action {
             TurnOn => grid.set_rect(instruction.point_a, instruction.point_b, true),
             TurnOff => grid.set_rect(instruction.point_a, instruction.point_b, false),
-            Toggle => grid.map_rect(instruction.point_a, instruction.point_b, |cell| !cell),
+            Toggle => grid.map_rect(instruction.point_a, instruction.point_b, |_, cell| !cell),
         }
     }
 
@@ -83,11 +83,11 @@ fn determine_brightness(instructions: &[Instruction]) -> u32 {
 
     for instruction in instructions {
         match instruction.action {
-            TurnOn => grid.map_rect(instruction.point_a, instruction.point_b, |cell| cell + 1),
-            TurnOff => grid.map_rect(instruction.point_a, instruction.point_b, |cell| {
+            TurnOn => grid.map_rect(instruction.point_a, instruction.point_b, |_, cell| cell + 1),
+            TurnOff => grid.map_rect(instruction.point_a, instruction.point_b, |_, cell| {
                 cell.saturating_sub(1)
             }),
-            Toggle => grid.map_rect(instruction.point_a, instruction.point_b, |cell| cell + 2),
+            Toggle => grid.map_rect(instruction.point_a, instruction.point_b, |_, cell| cell + 2),
         }
     }
 

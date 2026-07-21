@@ -14,10 +14,28 @@ fn main() {
     let preferences = parse(&input);
     let guest_count = preferences.width;
     let seating_arrangements = generate_seating_arrangements(guest_count);
-    let happiness_per_arrangement = calculate_happiness(seating_arrangements, preferences);
+    let happiness_per_arrangement = calculate_happiness(seating_arrangements, &preferences);
 
     println!(
-        "The total change in happiness for the optimal arrangement is {}",
+        "The total change in happiness for the optimal arrangement is {}\n",
+        happiness_per_arrangement.iter().max().unwrap()
+    );
+
+    let mut preferences_including_self =
+        Grid::<Happiness>::new(preferences.width + 1, preferences.height + 1);
+    preferences_including_self.map_rect(
+        (0, 0),
+        (preferences.width - 1, preferences.height - 1),
+        |(x, y), _| preferences[(x, y)],
+    );
+
+    let guest_count = preferences_including_self.width;
+    let seating_arrangements = generate_seating_arrangements(guest_count);
+    let happiness_per_arrangement =
+        calculate_happiness(seating_arrangements, &preferences_including_self);
+
+    println!(
+        "The total change in happiness for the optimal arrangement including yourself is {}",
         happiness_per_arrangement.iter().max().unwrap()
     );
 }
@@ -25,7 +43,7 @@ fn main() {
 #[timed]
 fn calculate_happiness(
     seating_arrangements: Vec<Vec<GuestId>>,
-    preferences: Grid<Happiness>,
+    preferences: &Grid<Happiness>,
 ) -> Vec<Happiness> {
     let guest_count = preferences.width;
 
@@ -114,7 +132,7 @@ mod tests {
         let preferences = parse(EXAMPLE);
         let guest_count = preferences.width;
         let seating_arrangements = generate_seating_arrangements(guest_count);
-        let happiness_per_arrangement = calculate_happiness(seating_arrangements, preferences);
+        let happiness_per_arrangement = calculate_happiness(seating_arrangements, &preferences);
 
         assert_eq!(*happiness_per_arrangement.iter().max().unwrap(), 330);
     }

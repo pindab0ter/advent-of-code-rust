@@ -86,14 +86,19 @@ impl<T: Copy> Grid<T> {
         }
     }
 
-    pub fn map_rect<F: Fn(T) -> T>(&mut self, a: impl GridIndex, b: impl GridIndex, callback: F) {
-        let (x_min, x_max, y_min, y_max) = self.rect_bounds(a, b);
+    pub fn map_rect<F: Fn((usize, usize), T) -> T>(
+        &mut self,
+        corner_a: impl GridIndex,
+        corner_b: impl GridIndex,
+        callback: F,
+    ) {
+        let (x_min, x_max, y_min, y_max) = self.rect_bounds(corner_a, corner_b);
 
         for y in y_min..=y_max {
             let start = y * self.width + x_min;
             let end = y * self.width + x_max;
-            for cell in &mut self.data[start..=end] {
-                *cell = callback(*cell);
+            for (delta_x, cell) in self.data[start..=end].iter_mut().enumerate() {
+                *cell = callback((x_min + delta_x, y), *cell);
             }
         }
     }
